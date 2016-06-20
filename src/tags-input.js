@@ -173,6 +173,8 @@ tagsInput.directive('tagsInput', function($timeout, $document, $window, $q, tags
             onTagRemoving: '&',
             onTagRemoved: '&',
             onTagClicked: '&',
+            onInputFocus: '&',
+            onInputBlur: '&'
         },
         replace: false,
         transclude: true,
@@ -397,16 +399,18 @@ tagsInput.directive('tagsInput', function($timeout, $document, $window, $q, tags
                     tagList.clearSelection();
                     scope.newTag.invalid = null;
                 })
-                .on('input-focus', function() {
+                .on('input-focus', function(e) {
                     element.triggerHandler('focus');
                     ngModelCtrl.$setValidity('leftoverText', true);
+                    scope.onInputFocus(e);
                 })
-                .on('input-blur', function() {
+                .on('input-blur', function(e) {
                     if (options.addOnBlur && !options.addFromAutocompleteOnly) {
                         tagList.addText(scope.newTag.text());
                     }
                     element.triggerHandler('blur');
                     setElementValidity();
+                    scope.onInputBlur(e);
                 })
                 .on('input-keydown', function(event) {
                     var key = event.keyCode,
